@@ -1,0 +1,15 @@
+[arq]
+192.168.56.245
+
+[db]
+db.sergio1.devops
+
+[app]
+app.sergio1.devops
+
+[cli]
+cli.sergio1.devops
+
+[all:vars]
+ansible_user=vagrant
+ansible_ssh_private_key_file=.vagrant/machines/arq/virtualbox/private_key
