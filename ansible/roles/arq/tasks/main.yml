@@ -1,0 +1,59 @@
+---
+- name: Instalar e configurar DHCP
+  apt:
+    name: isc-dhcp-server
+    state: present
+
+- name: Configurar DHCP
+  copy:
+    dest: /etc/dhcp/dhcpd.conf
+    content: |
+      option domain-name "nome1.devops";
+      option domain-name-servers 1.1.1.1, 8.8.8.8;
+      default-lease-time 600;
+      max-lease-time 7200;
+      authoritative;
+      subnet 192.168.56.0 netmask 255.255.255.0 {
+        range 192.168.56.50 192.168.56.100;
+        option routers 192.168.56.1;
+      }
+
+- name: Instalar pacotes LVM
+  apt:
+    name: lvm2
+    state: present
+
+- name: Criar volume group e logical volume
+  shell: |
+    pvcreate /dev/sdb /dev/sdc /dev/sdd
+    vgcreate dados /dev/sdb /dev/sdc /dev/sdd
+    lvcreate -n sistema -L 15G dados
+    mkfs.ext4 /dev/dados/sistema
+    mkdir -p /dados
+    echo '/dev/dados/sistema /dados ext4 defaults 0 0' >> /etc/fstab
+    mount -a
+
+- name: Instalar e configurar NFS Server
+  apt:
+    name: nfs-kernel-server
+    state: present
+
+- name: Criar usuário nfs-ifpb
+  user:
+    name: nfs-ifpb
+    shell: /usr/sbin/nologin
+
+- name: Criar diretório compartilhado
+  file:
+    path: /dados/nfs
+    state: directory
+    owner: nfs-ifpb
+    group: nfs-ifpb
+    mode: '0770'
+
+- name: Configurar exportação NFS
+  copy:
+    dest: /etc/exports
+    content: |
+      /dados/nfs 192.168.56.0/24(rw,sync,no_subtree_check,anonuid={{ lookup('pipe','id -u nfs-ifpb') }},anongid={{ lookup('pipe','id -g nfs-ifpb') }})
+  notify: Restart NFS

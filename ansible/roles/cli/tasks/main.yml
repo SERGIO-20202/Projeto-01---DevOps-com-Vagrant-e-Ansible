@@ -1,0 +1,30 @@
+---
+- name: Instalar Firefox e Xauth
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - firefox-esr
+    - xauth
+
+- name: Instalar e configurar autofs
+  apt:
+    name: autofs
+    state: present
+
+- name: Configurar autofs
+  copy:
+    dest: /etc/auto.master.d/nfs.autofs
+    content: |
+      /var/nfs /etc/auto.nfs
+
+- name: Definir mapeamento do NFS
+  copy:
+    dest: /etc/auto.nfs
+    content: |
+      nfsdir -fstype=nfs4 arq.sergio1.devops:/dados/nfs
+
+- name: Reiniciar autofs
+  service:
+    name: autofs
+    state: restarted
