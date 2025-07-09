@@ -3,25 +3,39 @@
 **Aluno**: Sérgio Henrique da Silva  
 **Matrícula**: 20202380045  
 **Disciplina**: Administração de Sistemas Abertos  
-**Professor**: Leonidas Lima  
 **Período**: 2025.1
 
-## Objetivo
-Provisionar uma infraestrutura DevOps com 4 VMs utilizando Vagrant e Ansible, configurando serviços como NFS, DHCP, Apache, MariaDB, LVM e SSH seguro.
-
 ## Estrutura do Projeto
-- `Vagrantfile`: criação das VMs
-- `ansible/`: automação da configuração
+- `Vagrantfile`: Criação das 4 VMs (arq, db, app, cli)
+- `ansible/`: Automação com Ansible
   - `hosts`: inventário
   - `playbook.yml`: playbook principal
-  - `roles/`: configurações por função
+  - `chaves_publicas/`: pasta onde a chave sergio1 será gerada automaticamente
+  - `roles/`: configuração das funções
 
-## Como usar
-```bash
-# Iniciar as VMs
-vagrant up
+## Roles e suas funções
+- **common**: Atualização do sistema, timezone, criação de usuários, SSH seguro, geração automática de chave pública
+- **arq**: DHCP, LVM, NFS
+- **db**: MariaDB, autofs
+- **app**: Apache, autofs
+- **cli**: Firefox, X11, autofs
 
-# Rodar o playbook
+## Como executar
+1. Subir as VMs:
+```
+vagrant up --provider=virtualbox
+```
+2. Acessar a pasta Ansible:
+```
 cd ansible
+```
+3. Executar o playbook (a chave será criada automaticamente se não existir):
+```
 ansible-playbook -i hosts playbook.yml
+```
+
+## Como acessar via SSH sem senha
+Após a execução, use:
+```
+ssh -i ansible/chaves_publicas/sergio1 sergio1@<ip_da_vm>
 ```
