@@ -2,13 +2,13 @@
 192.168.56.245
 
 [db]
-db.sergio1.devops
+192.168.56.246
 
 [app]
-app.sergio1.devops
+192.168.56.247
 
 [cli]
-cli.sergio1.devops
+192.168.56.248
 
 [all:vars]
 ansible_user=vagrant
