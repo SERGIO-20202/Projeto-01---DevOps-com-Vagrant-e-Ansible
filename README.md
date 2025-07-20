@@ -1,7 +1,8 @@
 # Projeto 01 - DevOps com Vagrant e Ansible Automático
 
 **Aluno**: Sérgio Henrique da Silva  
-**Disciplina**: Administração de Sistemas Abertos  
+**Disciplina**: Administração de Sistemas Abertos 
+**Professor**: Leônidas Lima
 **Período**: 2025.1
 
 ## Como executar
