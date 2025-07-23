@@ -2,7 +2,7 @@
 - name: Atualiza sistema
   apt:
     update_cache: yes
-    upgrade: dist
+    upgrade: yes
 
 - name: Cria usuário sergio1
   user:
