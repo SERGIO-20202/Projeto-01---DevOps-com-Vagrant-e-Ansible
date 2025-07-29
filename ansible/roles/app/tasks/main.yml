@@ -1,1 +1,40 @@
 # Configuração Apache e autofs
+---
+- name: Instalar Apache
+  apt:
+    name: apache2
+    state: present
+
+- name: Criar index.html
+  copy:
+    dest: /var/www/html/index.html
+    content: |
+      <html>
+      <head><title>Projeto DevOps</title></head>
+      <body>
+        <h1>Projeto 01 - DevOps com Vagrant e Ansible</h1>
+        <p>Aluno: Sérgio Henrique da Silva - 20202380045</p>
+      </body>
+      </html>
+
+- name: Instalar e configurar autofs
+  apt:
+    name: autofs
+    state: present
+
+- name: Configurar autofs
+  copy:
+    dest: /etc/auto.master.d/nfs.autofs
+    content: |
+      /var/nfs /etc/auto.nfs
+
+- name: Definir mapeamento do NFS
+  copy:
+    dest: /etc/auto.nfs
+    content: |
+      nfsdir -fstype=nfs4 arq.sergio1.devops:/dados/nfs
+
+- name: Reiniciar autofs
+  service:
+    name: autofs
+    state: restarted
